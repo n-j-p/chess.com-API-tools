@@ -73,9 +73,10 @@ def list_players(country_code='BW',maxplayers = None): # deafult look up botswan
                 print(player)
                 last_letter = letter
             #print(player, end=' ')
-            player_url = 'https://api.chess.com/pub/player/%s/stats' % player
+            player_stats_url = f'https://api.chess.com/pub/player/{player}/stats'
             with session.get(player_url) as player_req:
                 dat2 = player_req.json()
+            player_info_url = f'https://api.chess.com/pub/player/{player}/stats'
             #try:
             #    with urllib.request.urlopen(player_url) as url:
             #        dat2=json.loads(url.read().decode())
