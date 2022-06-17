@@ -2,7 +2,7 @@ def nplayers():
     import json
     import urllib.request
 
-    !pip install datapackage 
+    #!pip install datapackage 
     import datapackage
     import pandas as pd
     
@@ -55,8 +55,12 @@ def list_players(country_code='BW',maxplayers = None): # deafult look up botswan
         rating_types = ['chess_bullet','chess_blitz','chess_rapid',
                         'fide','national','uscf']
         ratings = [-1,]*len(rating_types)
-        all_ratings = pd.DataFrame(index = dat['players'],
-                                  data = {r:pd.NA for r in rating_types})
+        if maxplayers < np.inf:
+            player_names = dat['players'][:maxplayers]
+        else:
+            player_names = dat['players']
+        all_ratings = pd.DataFrame(index = player_names,
+                                   data = {r:pd.NA for r in rating_types})
         last_letter = '1'
         all_rating_types = set(())
         n = 0
@@ -71,7 +75,7 @@ def list_players(country_code='BW',maxplayers = None): # deafult look up botswan
             #print(player, end=' ')
             player_url = 'https://api.chess.com/pub/player/%s/stats' % player
             with session.get(player_url) as player_req:
-                dat2 = req.json()
+                dat2 = player_req.json()
             #try:
             #    with urllib.request.urlopen(player_url) as url:
             #        dat2=json.loads(url.read().decode())
@@ -95,7 +99,7 @@ def list_players(country_code='BW',maxplayers = None): # deafult look up botswan
 
                     
 
-        all_rating_types = all_rating_types.union(dat2.keys())
-        all_ratings.loc[player] = ratings
+            all_rating_types = all_rating_types.union(dat2.keys())
+            all_ratings.loc[player] = ratings
     print(all_rating_types)
     return(all_ratings)
